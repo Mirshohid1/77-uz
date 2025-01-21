@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinLengthValidator
+from django.utils.text import slugify
 
 from common.models import BaseModel, Address
 from common.validators import data_format_validate
@@ -52,7 +53,6 @@ class SubCategory(BaseModel):
 
 
 class Ad(BaseModel):
-    slug = models.TextField()
     name = models.CharField(max_length=150)
     description = models.TextField()
     price = models.FloatField()
@@ -76,6 +76,9 @@ class Ad(BaseModel):
     def clean(self):
         self.name = data_format_validate(self.name, capitalize=True, required=True)
         self.description = data_format_validate(self.description, capitalize=True, required=True)
+        if not self.slug:
+            slug = slugify(self.name)
+            self.slug = f"{slug}-77"
 
     def save(self, *args, **kwargs):
         self.full_clean()
