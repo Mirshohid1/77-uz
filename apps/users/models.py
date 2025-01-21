@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
 from common.validators import validate_phone_number, data_format_validate
+from common.models import BaseModel, Address
 
 
 def path_to_avatar(instance, filename):
@@ -17,11 +18,11 @@ class CustomUser(AbstractUser):
         unique=True, blank=True, null=True,
         validators=[validate_phone_number],
     )
-    avatar = models.ImageField(upload_to=path_to_avatar, blank=True, null=True)
+    avatar = models.ImageField(upload_to=path_to_avatar, blank=True, null=True, verbose_name=_('avatar'))
 
     def clean(self):
-        self.first_name = data_format_validate(self.first_name, is_name=True)
-        self.last_name = data_format_validate(self.last_name, is_name=True)
+        self.first_name = data_format_validate(self.first_name, title=True)
+        self.last_name = data_format_validate(self.last_name, title=True)
         self.phone_number = data_format_validate(self.phone_number, unique=True, required=True)
         self.email = data_format_validate(self.email, unique=True, required=True)
         self.username = data_format_validate(self.username, unique=True, required=True)
@@ -37,12 +38,27 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"User: {self.username}, {self.email} | {self.phone_number}"
 
-class Seller(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='seller_profile')
-    patronymic = models.CharField(max_length=100, null=True, blank=True)
-    project_name = models.CharField(max_length=100)
-    category = models.ForeignKey('store.Category', on_delete=models.CASCADE, related_name='sellers')
-    address = models.ForeignKey('common.Address', on_delete=models.SET_NULL, related_name='sellers')
+class Seller(BaseModel):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='seller_profile', verbose_name=_('user')
+    )
+    patronymic = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('patronymic'))
+    project_name = models.CharField(max_length=100, verbose_name=_('project name'))
+    category = models.ForeignKey(
+        'store.Category', on_delete=models.CASCADE, related_name='sellers', verbose_name=_('category')
+    )
+    address = models.ForeignKey(
+        Address, on_delete=models.SET_NULL, related_name='sellers', verbose_name=_('address')
+    )
 
     def get_full_name(self):
         return f"{self.user.first_name} {self.user.last_name} {self.patronymic}"
+
+    def clean(self):
+        self.patronymic = data_format_validate(self.patronymic, title=True)
+        self.project_name = data_format_validate(self.project_name, required=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
