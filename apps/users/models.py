@@ -32,8 +32,8 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
 
     def __str__(self):
         return f"User: {self.username}, {self.email} | {self.phone_number}"
