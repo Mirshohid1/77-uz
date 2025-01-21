@@ -49,7 +49,8 @@ class Seller(BaseModel):
         'store.Category', on_delete=models.CASCADE, related_name='sellers', verbose_name=_('category')
     )
     address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, related_name='sellers', verbose_name=_('address')
+        Address, on_delete=models.SET_NULL, related_name='sellers', verbose_name=_('address'),
+        null=True, blank=True,
     )
 
     def get_full_name(self):
