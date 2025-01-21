@@ -7,6 +7,7 @@ from .validators import data_format_validate
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
 
     class Meta:
         abstract = True
