@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 from .validators import data_format_validate
@@ -91,3 +92,19 @@ class Address(BaseModel):
     class Meta:
         verbose_name = _("Address")
         verbose_name_plural = _("Addresses")
+
+
+class Page(BaseModel):
+    content = models.TextField(verbose_name=_('content'))
+
+    def __str__(self):
+        return self.slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.content[:50])
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = _('Page')
+        verbose_name_plural = _('Pages')
