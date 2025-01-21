@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-from config.validators import validate_phone_number, data_format_validate
+from common.validators import validate_phone_number, data_format_validate
 
 
 def path_to_avatar(instance, filename):
@@ -36,3 +36,13 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"User: {self.username}, {self.email} | {self.phone_number}"
+
+class Seller(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='seller_profile')
+    patronymic = models.CharField(max_length=100, null=True, blank=True)
+    project_name = models.CharField(max_length=100)
+    category = models.ForeignKey('store.Category', on_delete=models.CASCADE, related_name='sellers')
+    address = models.ForeignKey('common.Address', on_delete=models.SET_NULL, related_name='sellers')
+
+    def get_full_name(self):
+        return f"{self.user.first_name} {self.user.last_name} {self.patronymic}"
