@@ -89,6 +89,23 @@ class Ad(BaseModel):
         verbose_name_plural = _('Ads')
 
 
+class AdExtraInfo(models.Model):
+    STATUS_CHOICES = [
+        ('in_moderation', 'In Moderation'),
+        ('rejected', 'Rejected'),
+        ('active', 'Active'),
+        ('expired', 'Expired')
+    ]
+
+    ad = models.OneToOneField(Ad, on_delete=models.CASCADE, related_name='ad_extra', verbose_name=_('ad'))
+    status = models.CharField(max_length=14, default='in_moderation', verbose_name=_('status'))
+    expires_at = models.DateTimeField(verbose_name=_('expires at'))
+
+    class Meta:
+        verbose_name = _('Ad Extra Info')
+        verbose_name_plural = _("Ad Extra Infos")
+
+
 class Photo(BaseModel):
     photo = models.ImageField(upload_to=path_to_photo, verbose_name=_('photo'))
     ad = models.ForeignKey(
