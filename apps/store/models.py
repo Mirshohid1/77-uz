@@ -56,6 +56,7 @@ class Ad(BaseModel):
     name = models.CharField(max_length=150)
     description = models.TextField()
     price = models.FloatField()
+    slug = models.SlugField(unique=True, null=True, blank=True)
     currency = models.CharField(
         max_length=3, verbose_name=_('currency'),
         validators=[MinLengthValidator(3)]
