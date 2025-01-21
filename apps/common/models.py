@@ -59,13 +59,16 @@ class District(BaseModel):
 
 class Address(BaseModel):
     country = models.OneToOneField(
-        Country, on_delete=models.SET_NULL, related_name='address', verbose_name=_('country')
+        Country, on_delete=models.SET_NULL, related_name='address', verbose_name=_('country'),
+        null=True, blank=True,
     )
     city = models.OneToOneField(
-        City, on_delete=models.SET_NULL, related_name='address', verbose_name=_('city')
+        City, on_delete=models.SET_NULL, related_name='address', verbose_name=_('city'),
+        null=True, blank=True,
     )
     district = models.OneToOneField(
-        District, on_delete=models.SET_NULL, related_name='address', verbose_name=_('district')
+        District, on_delete=models.SET_NULL, related_name='address', verbose_name=_('district'),
+        null=True, blank=True,
     )
     street = models.CharField(max_length=100, null=True, blank=True)
     building_number = models.CharField(max_length=10, null=True, blank=True)

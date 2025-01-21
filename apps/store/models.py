@@ -34,7 +34,10 @@ class Category(BaseModel):
 
 class SubCategory(BaseModel):
     name = models.CharField(max_length=150, verbose_name=_('name'))
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='subcategories')
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, related_name='subcategories',
+        null=True, blank=True,
+    )
 
     def save(self, *args, **kwargs):
         self.name = data_format_validate(self.name, capitalize=True, required=True)
@@ -58,13 +61,16 @@ class Ad(BaseModel):
         validators=[MinLengthValidator(3)]
     )
     sub_category = models.ForeignKey(
-        SubCategory, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('sub category')
+        SubCategory, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('sub category'),
+        null=True, blank=True,
     )
     address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('address')
+        Address, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('address'),
+        null=True, blank=True,
     )
     seller = models.ForeignKey(
-        Seller, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('seller')
+        Seller, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('seller'),
+        null=True, blank=True,
     )
 
     def clean(self):
