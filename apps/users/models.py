@@ -63,3 +63,19 @@ class Seller(BaseModel):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+class SellerRequest(BaseModel):
+    full_name = models.CharField(max_length=255, verbose_name=_("Full Name"))
+    project_name = models.CharField(max_length=255, verbose_name=_("Project Name"))
+    category_id = models.PositiveIntegerField(verbose_name=_("Category"))
+    phone_number = models.CharField(max_length=15, verbose_name=_("Phone Number"), validators=[validate_phone_number])
+    address = models.TextField(verbose_name=_("Address"))
+    email = models.EmailField(verbose_name=_("Email"))
+
+    class Meta:
+        verbose_name = _("Seller Request")
+        verbose_name_plural = _("Seller Requests")
+
+    def __str__(self):
+        return f"{self.full_name}, {self.project_name}"
