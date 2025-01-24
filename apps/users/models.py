@@ -66,6 +66,7 @@ class Seller(BaseModel):
 
 
 class SellerRequest(BaseModel):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='seller requests', verbose_name=_('User'))
     full_name = models.CharField(max_length=255, verbose_name=_("Full Name"))
     project_name = models.CharField(max_length=255, verbose_name=_("Project Name"))
     category_id = models.PositiveIntegerField(verbose_name=_("Category"))
