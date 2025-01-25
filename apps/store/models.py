@@ -6,7 +6,7 @@ from django.utils.text import slugify
 from common.models import BaseModel, Address
 from common.validators import data_format_validate
 
-from users.models import Seller
+from users.models import CustomUser
 
 
 def path_to_icon(instance, filename):
@@ -70,7 +70,7 @@ class Ad(BaseModel):
         null=True, blank=True,
     )
     seller = models.ForeignKey(
-        Seller, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('seller'),
+        CustomUser, on_delete=models.SET_NULL, related_name='ads', verbose_name=_('seller'),
         null=True, blank=True,
     )
 
