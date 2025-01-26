@@ -8,6 +8,7 @@ class UserInline(admin.StackedInline):
     fields = (
         'username', 'email', 'password', 'phone_number',
         'first_name', 'last_name', 'patronymic', 'avatar',
+        'category', 'role'
     )
 
 

@@ -1,20 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import ValidationError
 
-from common.validators import validate_phone_number, data_format_validate
+from common.validators import validate_phone_number, data_format_validate, category_exist_validator
 from common.models import BaseModel, Address
-from rest_framework.exceptions import ValidationError
-from store.models import Category
+
 
 
 def path_to_avatar(instance, filename):
     return f"uploads/user_{instance.id}/avatar_{filename}"
-
-def category_exist_validator(value):
-    if not Category.objects.filter(id=value).exists():
-        raise ValidationError("Category not exists")
-    return value
 
 
 class CustomUserManager(BaseUserManager):
@@ -85,7 +80,8 @@ class SellerRequest(BaseModel):
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
         ('admin', 'Admin'),
-        ('user', 'User'),
+        ('seller', 'Seller'),
+        ('user', 'User')
     ]
 
     email = models.EmailField(_("email address"), unique=True)
@@ -96,6 +92,7 @@ class CustomUser(AbstractUser):
         validators=[validate_phone_number],
     )
     patronymic = models.CharField(max_length=100, null=True, blank=True, verbose_name=_('patronymic'))
+    category = models.ForeignKey('store.Category', on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_('Category'))
     avatar = models.ImageField(upload_to=path_to_avatar, blank=True, null=True, verbose_name=_('avatar'))
     role = models.CharField(
         max_length=20,

@@ -48,3 +48,10 @@ def data_format_validate(value, title=False, capitalize=False, required=False, u
     elif unique:
         return value.lower()
     return value
+
+
+def category_exist_validator(value):
+    from store.models import Category
+    if not Category.objects.filter(id=value).exists():
+        raise ValidationError("Category not exists")
+    return value
